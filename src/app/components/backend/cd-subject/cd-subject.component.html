@@ -1,0 +1,194 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="text-center mb-5">Danh sách môn học</h1>
+        <div class="d-flex justify-content-between align-items-sm-center my-3">
+            <div>
+                <app-back-page></app-back-page>
+                <button (click)="titleFormAdd()" type="button" class="btn btn-primary ms-5 px-5" data-bs-toggle="modal" data-bs-target="#formAddSubject">
+                    <i class="fa-solid fa-plus"></i> Thêm mới
+                </button>
+            </div>
+            <div class="d-flex flex-row-reverse  mb-2">
+                <div class="p-2 ">
+                    <select (change)="onTableSizeChange($event)" class="form-select">
+                        <option *ngFor="let size of tableSizes" [value]="size">
+                        {{ size }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Logo</th>
+                    <th>Quiz</th>
+                    <th scope="col">Mã Code</th>
+                    <th scope="col">Thời gian thêm</th>
+                    <th scope="col">Thời gian cập nhập</th>
+                    <th scope="col">Thao tác</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let subject of subjects| paginate : {
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count
+                  };let i = index">
+                    <th scope="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <td>{{i+1}}</td>
+                    <td>{{subject.name}}</td>
+                    <td>{{subject.logo}}</td>
+                    <td>
+                        {{subject.quizs.length}}
+                    </td>
+                    <td>{{subject.code}}</td>
+                    <td>{{subject.created_at |date :"dd/MM/YYY"}}</td>
+                    <td>{{subject.updated_at |date :"dd/MM/YYY"}}</td>
+                    <td>
+                        <div ngbDropdown placement="left-end" class="dropstart">
+                            <button ngbDropdownToggle class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
+                                Chi tiết
+                            </button>
+                            <ul ngbDropdownMenu aria-labelledby="dropdownMenuButton1" style="min-width: 13rem;" class="dropdown-menu p-3">
+                                <div class="d-grid gap-3">
+                                    <button (click)="edit(subject)" type="button" class="btn btn-primary  btn-block " data-bs-toggle="modal" data-bs-target="#formAddSubject">
+                                        <i class="fa-solid fa-pen-to-square"></i>   Sửa
+                                    </button>
+                                    <button (click)="destroy(subject.id)" type="button" class="btn btn-danger  btn-block ">
+                                        <i class="fa-regular fa-trash-can"></i> Xóa
+                                    </button>
+                                    <a name="" id="" class="btn btn-success" [routerLink]="['../quiz',subject.id]" role="button">Quiz</a>
+                                </div>
+                                <!-- ngbDropdownItem -->
+                            </ul>
+                        </div>
+
+
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-5">
+            <pagination-controls [responsive]="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+        </div>
+    </div>
+</div>
+
+
+<!-- thêm môn học -->
+<div class="modal fade" id="formAddSubject" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div *ngIf="cateForm ===  'add';then FromAddSubject else FormEditSubject" class="data-font"> </div>
+            <ng-template #FromAddSubject class="data-font">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm mới môn học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{formValueSubject.value | json}}
+
+                <form [formGroup]="formValueSubject" (ngSubmit)="create()">
+                    <div class="modal-body mx-5 ">
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Tên môn học</label>
+                            <input formControlName="name" type="text" class="form-control ">
+                            <div *ngIf="formValueSubject.controls['name'].errors 
+                            && (formValueSubject.controls['name'].touched  || formValueSubject.controls['name'].dirty)">
+                                <span class="text-danger" *ngIf="formValueSubject.controls['name'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Logo</label>
+                            <input type="file" formControlName="logo" class="form-control ">
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Mã Code</label>
+                            <input formControlName="code" type="text" class="form-control ">
+                            <div *ngIf="formValueSubject.controls['code'].errors 
+                            && (formValueSubject.controls['code'].touched  || formValueSubject.controls['code'].dirty)">
+                                <span class="text-danger" *ngIf="formValueSubject.controls['code'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <!-- <div class="mb-3 ">
+                            <label for=" " class="form-label ">Slug</label>
+                            <input formControlName="slug " readonly="true " type="text " class="form-control ">
+                        </div> -->
+                    </div>
+                    <div class="modal-footer ">
+                        <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Thoát</button>
+                        <button [disabled]="formValueSubject.invalid" type="submit" class="btn btn-primary " data-bs-dismiss="modal">Lưu</button>
+                    </div>
+
+                </form>
+
+            </ng-template>
+            <ng-template #FormEditSubject class="data-font">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa môn học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form [formGroup]="formValueSubject" (ngSubmit)="update()">
+                    {{formValueSubject.value|json}}
+                    <div class="modal-body mx-5 ">
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Tên môn học</label>
+                            <input formControlName="name" type="text" class="form-control ">
+                            <div *ngIf="formValueSubject.controls['name'].errors 
+                            && (formValueSubject.controls['name'].touched  || formValueSubject.controls['name'].dirty)">
+                                <span class="text-danger" *ngIf="formValueSubject.controls['name'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Logo</label>
+                            <input type="file" formControlName="logo" class="form-control ">
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Mã Code</label>
+                            <input formControlName="code" type="text" class="form-control ">
+                            <div *ngIf="formValueSubject.controls['code'].errors 
+                            && (formValueSubject.controls['code'].touched  || formValueSubject.controls['code'].dirty)">
+                                <span class="text-danger" *ngIf="formValueSubject.controls['code'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <!-- <div class="mb-3 ">
+                            <label for=" " class="form-label ">Slug</label>
+                            <input formControlName="slug " readonly="true " type="text " class="form-control ">
+                        </div> -->
+                    </div>
+                    <div class="modal-footer ">
+                        <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Thoát</button>
+                        <button [disabled]="formValueSubject.invalid" type="submit" class="btn btn-primary " data-bs-dismiss="modal">Lưu</button>
+                    </div>
+
+                </form>
+            </ng-template>
+        </div>
+    </div>
+</div>

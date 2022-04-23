@@ -1,0 +1,13 @@
+<a [routerLink]="['/subject',subject.id]">
+    <div class="card text-white card-has-bg click-col" style="background-image:url('/assets/img/logos/{{subject.logo}}');">
+        <div class="card-img-overlay ">
+            <div class="card-body">
+                <small class="card-meta mb-2">Số quiz: {{subject.quizs.length}}</small>
+                <a style="text-decoration: none;" class=" text-white " [routerLink]="['/subject',subject.id]">
+                    <h3 class="card-title mt-0 mb-0 py-2">{{subject.name}}</h3>
+                </a>
+                <small>Ngày cập nhập: {{subject.updated_at |date: "dd-MM-YYY"}}</small>
+            </div>
+        </div>
+    </div>
+</a>

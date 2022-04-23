@@ -1,0 +1,234 @@
+<div class="row">
+
+    <div class="col-lg-12">
+        <h1 class="text-center mb-5">Danh sách câu hỏi</h1>
+        <div class="d-flex justify-content-between align-items-sm-center my-3">
+            <div>
+
+                <app-back-page></app-back-page>
+                <button (click)="create()" type="button" class="btn btn-primary ms-5" data-bs-toggle="modal" data-bs-target="#formQuestion">
+                    Thêm mới
+                  </button>
+            </div>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false">
+               Hiển thị đáp án
+            </button>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">Nội dung</th>
+                    <th scope="col">Có số đáp án</th>
+
+                    <th scope="col">Thao tác</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let question of questions,let i = index">
+                    <th scope="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <td>{{i+1}}</td>
+                    <td>
+                        {{question.text}}
+                        <br>
+
+
+                        <div class="collapse" id="collapseExample">
+                            <div class="card card-body">
+                                <ul class="list-group">
+                                    <li *ngFor="let answer of question.answers" class="list-group-item {{answer.is_correct == 'true' ? 'active':''}}">{{answer.text}}</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {{question.answers.length}}
+                    </td>
+
+                    <td>
+                        <div ngbDropdown placement="left-end" class="dropstart">
+                            <button ngbDropdownToggle class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
+                                Chi tiết
+                            </button>
+                            <ul ngbDropdownMenu aria-labelledby="dropdownMenuButton1" style="min-width: 13rem;" class="dropdown-menu p-3">
+                                <div class="d-grid gap-3">
+
+                                    <button (click)="edit(question.id)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formQuestion">
+                                        <i class="fa-solid fa-pen-to-square"></i>   Sửa
+                                      </button>
+                                    <button (click)="destroy(question.id)" type="button" class="btn btn-danger  btn-block ">
+                                        <i class="fa-regular fa-trash-can"></i> Xóa
+                                    </button>
+                                </div>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="formQuestion" tabindex="-1" aria-labelledby="formQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div *ngIf="cateForm ==='add' ; then FormAdd else FormEdit "></div>
+        <ng-template #FormAdd>
+            <div class="modal-content px-5">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="formQuestionLabel">Thêm mới câu hỏi</h1>
+                    <button (click)="resetForm()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{formValueAdd.value | json}}
+                <br> {{formValueAdd.valid}}
+                <form [formGroup]="formValueAdd" (submit)="store()">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Nội dung câu hỏi</label>
+                            <textarea formControlName="text" cols="30" class="form-control" rows="2"></textarea>
+                            <div *ngIf="formValueAdd.controls['text'].errors 
+                            && (formValueAdd.controls['text'].touched  || formValueAdd.controls['text'].dirty)">
+                                <span class="text-danger" *ngIf="formValueAdd.controls['text'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <h2>Đáp án</h2>
+                                    </div>
+
+                                </div>
+                                <section class="container border mb-4 p-3">
+                                    <button [hidden]="answersArr.controls.length == 4" (click)="addArrAnwserAdd()" class="btn btn-primary" type="button">Add</button>
+                                    <ng-container formArrayName="answers">
+                                        <div *ngFor="let _ of answersArr.controls; index as i">
+                                            <ng-container [formGroupName]="i">
+                                                <!-- <input formControlName="text" /> -->
+                                                <div class="row mb-5">
+                                                    <div class="col-2">
+                                                        <div class="d-flex justify-content-center mt-5">
+                                                            <button [disabled]="answersArr.controls.length == 2" class="btn btn-danger" (click)="removeArrAnwserAdd(i)">x</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label for="">Nội dung đáp án</label>
+                                                            <textarea formControlName="text" class="form-control" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <label for="">Chọn Đúng Sai</label>
+                                                            <select formControlName="is_correct" class="form-control">
+                                                                <option  value="false">Sai</option>
+                                                                <option value="true">Đúng</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button (click)="resetForm()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                        <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Lưu</button>
+                    </div>
+                </form>
+            </div>
+
+        </ng-template>
+        <ng-template #FormEdit>
+            <div class="modal-content px-5">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="formQuestionLabel">Chỉnh sửa câu hỏi</h1>
+                    <button (click)="resetForm()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{formValueAdd.value | json}}
+                <form [formGroup]="formValueAdd" (submit)="update()">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Nội dung câu hỏi</label>
+                            <textarea formControlName="text" name="" id="" cols="30" class="form-control" rows="2"></textarea>
+                            <div *ngIf="formValueAdd.controls['text'].errors 
+                            && (formValueAdd.controls['text'].touched  || formValueAdd.controls['text'].dirty)">
+                                <span class="text-danger" *ngIf="formValueAdd.controls['text'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <h2>Đáp án</h2>
+                                    </div>
+                                </div>
+                                <section class="container border mb-4 p-3">
+                                    <button [hidden]="answersArr.controls.length == 4" (click)="addArrAnwserEdit()" class="btn btn-primary" type="button">Add</button>
+                                    <ng-container formArrayName="answers">
+                                        <div *ngFor="let _ of answersArr.controls; index as i">
+                                            <ng-container [formGroupName]="i">
+                                                <!-- <input formControlName="text" /> -->
+                                                <div class="row mb-5">
+                                                    <div class="col-2">
+                                                        <div class="d-flex justify-content-center mt-5">
+                                                            <button [disabled]="answersArr.controls.length == 2" class="btn btn-danger" (click)="removeArrAnwserEdit(i)">x</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label for="">Nội dung đáp án</label>
+                                                            <textarea formControlName="text" class="form-control" name="" id="" rows="3"></textarea>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+
+                                                        <div class="form-group">
+                                                            <label for="">Chọn Đúng Sai</label>
+                                                            <select formControlName="is_correct" class="form-control">
+                                                                <option  value="false">Sai</option>
+                                                                <option value="true">Đúng</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button (click)="resetForm()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                        <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+    </div>
+</div>

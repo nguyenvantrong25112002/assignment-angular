@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="min-vh-100">
+        <div class="row">
+
+            <app-subject class="col-lg-3 mt-5" [data-subject]='subject' *ngFor="let subject of subjects| paginate : {
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count
+              }"></app-subject>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-center">
+            <div class=" mt-5">
+                <pagination-controls [responsive]="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>

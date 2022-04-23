@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="row  mt-5">
+        <div class="col-lg-12 d-flex justify-content-end">
+            <button type="button" (click)="checkAnswer()" class="btn btn-success btn-lg btn-block">Nộp bài</button>
+        </div>
+    </div>
+    <div class="row justify-content-md-center ">
+        <div class="col-lg-2">
+            <div class="d-flex align-items-center justify-content-md-end pt-5 ">
+                <div class="mx-5 " id="prev ">
+                    <button color="primary" [disabled]="page === 0" (click)="previous()" class="btn btn-primary ">Previous</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" style="height: 100vh;">
+            <div class="question mt-sm-5 my-1 mb-5">
+                <div class=" ml-sm-5 pl-sm-5 pt-2">
+                    <div class="py-2 h5">
+                        <b>Câu {{page +1}} / {{length_questions}}</b> : <b> {{questions[page].text}} </b>
+                    </div>
+                    <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+                        <label *ngFor="let answer of questions[page].answers" class=" options ">
+                            <span class="fs-6 pt-2">
+                                {{answer.text}} //  {{answer.is_correct}}
+                            </span> 
+                            <input [checked]="checkedAnswer(answer.id)" (change)="changeAnswer(questions[page].id,answer.id)" [value]="answer.id" type="radio" name="radio">
+                             <span class="checkmark "></span> 
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-lg-2">
+            <div class="d-flex align-items-center justify-content-md-start pt-5 ">
+                <div class="mx-5 mr-sm-5 "> <button [disabled]="page === (questions.length - 1)" (click)="next()" class="btn btn-success ">Next</button> </div>
+            </div>
+        </div>
+    </div>
+
+</div>

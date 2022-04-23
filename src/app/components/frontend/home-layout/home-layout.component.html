@@ -1,0 +1,115 @@
+<mat-drawer-container class="example-container" [hasBackdrop]="true">
+
+    <mat-drawer [(opened)]="opened" class="bg-dark" #drawer [mode]="'side'">
+        <div class="row p-3 ">
+            <div *ngFor="let backgroundItem of backgroundAray" class="col-lg-6 mb-3">
+                <div (click)="setBd(backgroundItem)" style="cursor: pointer;">
+                    <img class="w-100" src="/assets/img/bg/{{backgroundItem}}">
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <!-- <mat-form-field appearance="fill">
+                <mat-label>Sidenav mode</mat-label>
+                <mat-select #mode value="side">
+                    <mat-option value="side">Side</mat-option>
+                    <mat-option value="over">Over</mat-option>
+                    <mat-option value="push">Push</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Has backdrop</mat-label>
+                <mat-select #hasBackdrop>
+                    <mat-option>Unset</mat-option>
+                    <mat-option [value]="true">True</mat-option>
+                    <mat-option [value]="false">False</mat-option>
+                </mat-select>
+            </mat-form-field> -->
+        <div class="app" style="background-image: url('/assets/img/bg/{{imageBg}}');">
+            <div class="example-container ">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav navbar-nav-scroll">
+
+                            <div class="example-button-container me-3">
+                                <a routerLink="/" mat-mini-fab color="warn" aria-label="Example icon button with a home icon">
+                                    <mat-icon>home</mat-icon>
+                                </a>
+                            </div>
+
+                            <div class="example-button-container">
+                                <button mat-mini-fab (click)="drawer.toggle()" mat-fab color="primary" aria-label="Example icon button with a delete icon">
+                                        <i class="fa-solid fa-bars-staggered"></i>
+                                </button>
+
+
+                            </div>
+
+
+                        </ul>
+
+                        <div>
+                            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+
+                                <ng-container *ngIf="authUser === null;then chua_dang_nhap  else da_dang_nhap"></ng-container>
+                                <ng-template #chua_dang_nhap>
+
+                                </ng-template>
+                                <ng-template #da_dang_nhap>
+
+                                    <li class="nav-item">
+                                        <div class="btn-group">
+                                            <button mat-raised-button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Xin chào {{user.fullname}}
+                                                </button>
+                                            <ul class="dropdown-menu w-100 px-3">
+                                                <li>
+
+                                                    <a routerLink="homework-history" type="button" class="btn btn-dark w-100 mb-3">Lịch sử làm bài</a>
+                                                </li>
+                                                <li>
+                                                    <button type="button" (click)="logout()" class="btn btn-info w-100">Đăng xuất</button>
+
+                                                </li>
+
+
+                                            </ul>
+                                        </div>
+
+                                    </li>
+
+                                </ng-template>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <router-outlet>
+                    <app-loading></app-loading>
+                </router-outlet>
+
+                <footer class="text-center text-white pb-5">
+                    <div class="container p-4 pb-0">
+                        <section class="">
+                            <a class="btn btn-primary btn-floating m-1" href="#!" role="button">
+                                <i class="fa-brands fa-facebook"></i>
+                            </a>
+
+                            <a class="btn btn-primary btn-floating m-1" style="background-color: #55acee;" href="#!" role="button"><i class="fab fa-twitter"></i></a>
+
+                            <a class="btn btn-primary btn-floating m-1" style="background-color: #dd4b39;" href="#!" role="button"><i class="fab fa-google"></i></a>
+
+                            <a class="btn btn-primary btn-floating m-1" style="background-color: #ac2bac;" href="#!" role="button"><i class="fab fa-instagram"></i></a>
+
+                            <a class="btn btn-primary btn-floating m-1" style="background-color: #0082ca;" href="#!" role="button"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-primary btn-floating m-1" style="background-color: #333333;" href="#!" role="button"><i class="fab fa-github"></i></a>
+                        </section>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

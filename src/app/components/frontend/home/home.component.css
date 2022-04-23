@@ -1,0 +1,45 @@
+:host /deep/ .ngx-pagination {
+    padding-left: 0px;
+    box-shadow: 1px 1px 1px 1px;
+    background-color: black;
+    border-radius: 30px;
+}
+
+ :host /deep/.ngx-pagination .current,
+.btn-info {
+    background: #17a2b8 !important;
+    border: transparent;
+    border-radius: 20px;
+    transition: all .3s linear;
+}
+
+ :host /deep/.ngx-pagination .current:hover {
+    background: #17a2b8 !important;
+    border-radius: 20px;
+    color: black;
+    border: transparent;
+}
+
+:host /deep/.ngx-pagination li a {
+    text-decoration: none;
+    transition: all .3s linear;
+    color: #fff;
+}
+
+:host /deep/.ngx-pagination li a:hover {
+    border-radius: 20px;
+    color: black;
+}
+
+:host /deep/.ngx-pagination li:last-child,
+:host /deep/.ngx-pagination li:nth-child(1) {
+    outline: none;
+    margin: 20px;
+    border-radius: 5px !important;
+}
+
+:host /deep/.ngx-pagination li a:hover:last-child,
+:host /deep/.ngx-pagination li a:hover:nth-child(1) {
+    outline: none;
+    /* border-radius: 5px !important; */
+}

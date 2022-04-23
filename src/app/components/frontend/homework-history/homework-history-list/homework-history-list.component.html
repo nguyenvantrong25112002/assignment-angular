@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <h1 class="text-center text-light fs-1 text">Lịch sử làm bài </h1>
+
+            <table class="table table-striped table-light table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Môn</th>
+                        <th scope="col">Quiz</th>
+                        <th scope="col">Điểm</th>
+                        <th scope="col">Thời gian làm</th>
+                        <th scope="col">Thời gian kết thúc</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let studentQuiz of studentquizsArr ,let i = index">
+                        <th scope="row">{{i}}</th>
+                        <td>{{studentQuiz.quizs.subjects.name}}</td>
+                        <td>{{studentQuiz.quizs.name}}</td>
+                        <td>{{studentQuiz.score}}</td>
+                        <td>{{studentQuiz.created_at |date: "dd-MM-YYY h:ss"}}</td>
+                        <td>{{studentQuiz.updated_at |date: "dd-MM-YYY h:ss"}}</td>
+                        <td><a [routerLink]="[ studentQuiz.id]" mat-raised-button color="accent">Chi tiết</a></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+</div>

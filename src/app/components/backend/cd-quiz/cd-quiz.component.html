@@ -1,0 +1,254 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="text-center mb-5">Danh sách quiz</h1>
+        <div class="d-flex justify-content-between align-items-sm-center my-3">
+            <div>
+                <app-back-page></app-back-page>
+                <button (click)="create()" type="button" class="btn btn-primary ms-5" data-bs-toggle="modal" data-bs-target="#formQuizModal">
+                    <i class="fa-solid fa-plus"></i> Thêm mới
+                </button>
+
+
+
+
+
+            </div>
+            <div class="d-flex flex-row-reverse  mb-2">
+                <div class="p-2 ">
+                    <select (change)="onTableSizeChange($event)" class="form-select">
+                        <option *ngFor="let size of tableSizes" [value]="size">
+                        {{ size }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Thời gian làm</th>
+                    <th scope="col">Thời gian mở</th>
+                    <th scope="col">Thời gian Đóng</th>
+                    <th scope="col">Trộn đề</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let quiz of quizs| paginate : {
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count
+                  };let i = index">
+                    <th scope="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        </div>
+                    </th>
+                    <td>{{i+1}}</td>
+                    <td>{{quiz.name}}</td>
+                    <td>{{quiz.duration_minutes}}</td>
+                    <td>{{quiz.start_time |date :"dd/MM/YYY"}}</td>
+                    <td>{{quiz.end_time |date :"dd/MM/YYY"}}</td>
+                    <td>
+                        <div *ngIf="quiz.is_shuffle == 0; then yes_shuffle else no_shuffle"></div>
+                        <ng-template #yes_shuffle><button disabled (click)="shuffle( quiz.id,quiz.is_shuffle)" type="button" class="btn btn-success">Có trộn</button></ng-template>
+                        <ng-template #no_shuffle><button disabled (click)="shuffle(quiz.id, quiz.is_shuffle)" type="button" class="btn btn-warning">Không trộn</button></ng-template>
+                    </td>
+                    <td>
+                        <div *ngIf="quiz.status == 0; then active else not_active"></div>
+                        <ng-template #active><button disabled type="button" class="btn btn-success">Kích hoạt</button></ng-template>
+                        <ng-template #not_active><button disabled type="button" class="btn btn-warning">Chưa kích hoạt</button></ng-template>
+
+                    </td>
+                    <td>
+                        <div ngbDropdown placement="left-end" class="dropstart">
+                            <button ngbDropdownToggle class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
+                                Chi tiết
+                            </button>
+                            <ul ngbDropdownMenu aria-labelledby="dropdownMenuButton1" style="min-width: 13rem;" class="dropdown-menu p-3">
+                                <div class="d-grid gap-3">
+                                    <button (click)="edit(quiz)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formQuizModal">
+                                        <i class="fa-solid fa-pen-to-square"></i>   Sửa
+                                    </button>
+                                    <button (click)="destroy(quiz.id)" type="button" class="btn btn-danger  btn-block ">
+                                        <i class="fa-regular fa-trash-can"></i> Xóa
+                                    </button>
+                                    <a [routerLink]="['../../quiz',quiz.id ,'question']" class="btn btn-info btn-lg btn-block">Câu hỏi</a>
+                                    <!-- <a routerLink="../../quiztesst" class="btn btn-info btn-lg btn-block">Câu hỏi</a> -->
+                                </div>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-5">
+            <pagination-controls [responsive]="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="formQuizModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl ">
+        <div *ngIf="cateForm === 'add';then FromAddQuiz else FormEditQuiz"> </div>
+        <ng-template #FromAddQuiz>
+            <div class="modal-content  px-5">
+                <div class="modal-header">
+                    <h1 class="modal-title">Thêm mới Quiz</h1>
+                    <button (click)="resetForm()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="formValueQuiz" (ngSubmit)="store()">
+                    <div class="modal-body">
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Tên</label>
+                            <input formControlName="name" type="text" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['name'].errors 
+                            && (formValueQuiz.controls['name'].touched  || formValueQuiz.controls['name'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['name'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian làm bài</label>
+                            <input formControlName="duration_minutes" type="text" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['duration_minutes'].errors 
+                            && (formValueQuiz.controls['duration_minutes'].touched  || formValueQuiz.controls['duration_minutes'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['duration_minutes'].hasError('pattern')">
+                                Sai định dạng !
+                                </span>
+                            </div>
+                            <div *ngIf="formValueQuiz.controls['duration_minutes'].errors 
+                            && (formValueQuiz.controls['duration_minutes'].touched  || formValueQuiz.controls['duration_minutes'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['duration_minutes'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian mở</label>
+                            <input formControlName="start_time" type="datetime-local" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['start_time'].errors 
+                            && (formValueQuiz.controls['start_time'].touched  || formValueQuiz.controls['start_time'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['start_time'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian đóng</label>
+                            <input formControlName="end_time" type="datetime-local" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['end_time'].errors 
+                            && (formValueQuiz.controls['end_time'].touched  || formValueQuiz.controls['end_time'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['end_time'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Trộn đề</label>
+                            <select formControlName="is_shuffle" class="form-control form-control-sm" name="" id="">
+                            <option value="0">Có</option>
+                            <option  value="1">Không</option>
+                          </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer ">
+                        <button (click)="resetForm()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button [disabled]="formValueQuiz.invalid" type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </ng-template>
+        <ng-template #FormEditQuiz>
+            <div class="modal-content px-5 ">
+
+                <div class="modal-header">
+                    <h1 class="modal-title">Sửa Quiz</h1>
+                    <button (click)="resetForm()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form [formGroup]="formValueQuiz" (ngSubmit)="update()">
+                    {{formValueQuiz.value|json}} {{formValueQuiz.invalid}}
+                    <div class="modal-body">
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Tên</label>
+                            <input formControlName="name" type="text" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['name'].errors 
+                            && (formValueQuiz.controls['name'].touched  || formValueQuiz.controls['name'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['name'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian làm bài</label>
+                            <input formControlName="duration_minutes" type="number" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['duration_minutes'].errors 
+                            && (formValueQuiz.controls['duration_minutes'].touched  || formValueQuiz.controls['duration_minutes'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['duration_minutes'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian mở</label>
+                            <input formControlName="start_time" type="datetime-local" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['start_time'].errors 
+                            && (formValueQuiz.controls['start_time'].touched  || formValueQuiz.controls['start_time'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['start_time'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for=" " class="form-label ">Thời gian đóng</label>
+                            <input formControlName="end_time" type="datetime-local" max="60" name=" " id=" " class="form-control ">
+                            <div *ngIf="formValueQuiz.controls['end_time'].errors 
+                            && (formValueQuiz.controls['end_time'].touched  || formValueQuiz.controls['end_time'].dirty)">
+                                <span class="text-danger" *ngIf="formValueQuiz.controls['end_time'].hasError('required')">
+                                Chưa nhập trường này !
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="" class="form-label">Trộn đề</label>
+                            <select formControlName="is_shuffle" class="form-control form-control-sm" name="" id="">
+                            <option value="0">Có</option>
+                            <option  value="1">Không</option>
+                          </select>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer ">
+                        <button (click)="resetForm()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button [disabled]="formValueQuiz.invalid" type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </ng-template>
+
+    </div>
+</div>

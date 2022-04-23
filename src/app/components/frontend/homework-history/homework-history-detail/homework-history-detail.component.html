@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 mt-5 pt-4">
+            <div class="card card-flush mb-5 py-4">
+                <h1 class="text-center">Môn : {{studentQuiz.quizs.subjects.name}} : {{studentQuiz.quizs.name}}</h1>
+            </div>
+            <ul *ngFor="let question of studentQuiz.student_quiz_detail ,let i = index" class="list-group mb-5">
+                <li class="list-group-item">
+                    <p>Câu :{{i+1}} : {{question.answers.questions.text}}</p>
+                    <ul class="list-group list-group-flush">
+                        <li *ngFor="let answerQue of question.answers.questions.answers" class="{{answerQue.id == question.answers.id ? 'bg-danger':''}} {{answerQue.is_correct==='true' ? 'active': ''}}  list-group-item  ">
+                            {{answerQue.text}}
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+
+
+        </div>
+    </div>
+</div>

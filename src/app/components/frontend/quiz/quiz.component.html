@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row justify-content-md-center mt-5">
+        <div *ngFor="let quiz of quizs" class="col-lg-8 mb-4">
+            <div class="card border-secondary shadow  ">
+                <div class="card-body ">
+                    <h1 class="card-title">{{quiz.name}}</h1>
+                    <div class=" d-flex">
+                        <p class="card-text ">Thời gian mở : <span class="border border-dark p-2 rounded-pill">{{quiz.start_time |date: "dd-MM-YYY"}}</span></p>
+                        <span class="mx-5">|</span>
+                        <p class="card-text">Thòi gian đóng : <span class="shadow-lg bg-danger p-2 rounded-pill text-light">{{quiz.end_time |date: "dd-MM-YYY"}}</span> </p>
+                    </div>
+                    <blockquote class="blockquote mb-0 text-end">
+                        <a [routerLink]=" ['/quiz',quiz.id]" class="btn btn-primary">Làm</a>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+.app {
+    background-image: url(https://www.teahub.io/photos/full/81-817751_quiz-time-announcement-poster-neon-signboard-vector-quiz.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: fixed;
+    background-size: cover;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.example-container {
+    min-height: 120vh;
+}
+
+mat-drawer {
+    width: 20%;
+}
+
+mat-grid-tile {
+    background: lightblue;
+}
+
+
+/*
+mat-drawer-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+} */
